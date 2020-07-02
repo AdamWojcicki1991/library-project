@@ -1,6 +1,6 @@
-package com.crud.library.repository;
+package com.crud.library.borrow.repository;
 
-import com.crud.library.domain.Borrow;
+import com.crud.library.borrow.domain.Borrow;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

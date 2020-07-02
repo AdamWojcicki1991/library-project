@@ -1,5 +1,7 @@
-package com.crud.library.domain;
+package com.crud.library.book.domain;
 
+import com.crud.library.book.BookStatus;
+import com.crud.library.title.domain.Title;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

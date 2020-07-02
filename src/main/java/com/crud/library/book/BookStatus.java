@@ -1,4 +1,4 @@
-package com.crud.library.domain;
+package com.crud.library.book;
 
 public enum BookStatus {
     IN_LIBRARY,

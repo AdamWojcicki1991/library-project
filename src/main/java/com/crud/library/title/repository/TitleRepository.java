@@ -1,6 +1,6 @@
-package com.crud.library.repository;
+package com.crud.library.title.repository;
 
-import com.crud.library.domain.Title;
+import com.crud.library.title.domain.Title;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

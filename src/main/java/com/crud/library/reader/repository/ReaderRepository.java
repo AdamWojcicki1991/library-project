@@ -1,6 +1,6 @@
-package com.crud.library.repository;
+package com.crud.library.reader.repository;
 
-import com.crud.library.domain.Reader;
+import com.crud.library.reader.domain.Reader;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
