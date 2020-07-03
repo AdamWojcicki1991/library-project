@@ -9,10 +9,10 @@ import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
-public class BorrowDto {
-    private Long id;
-    private Reader reader;
-    private Book book;
-    private LocalDate borrowDate;
-    private LocalDate returnDate;
+public final class BorrowDto {
+    private final Long id;
+    private final Reader reader;
+    private final Book book;
+    private final LocalDate borrowDate;
+    private final LocalDate returnDate;
 }

@@ -3,6 +3,7 @@ package com.crud.library.borrow.domain;
 import com.crud.library.book.domain.Book;
 import com.crud.library.reader.domain.Reader;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,8 +11,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Entity
 @Table(name = "BORROWS")
@@ -38,3 +40,4 @@ public class Borrow {
     @Column(name = "RETURN_DATE")
     private LocalDate returnDate;
 }
+

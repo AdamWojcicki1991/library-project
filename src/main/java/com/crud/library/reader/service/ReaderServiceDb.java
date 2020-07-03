@@ -1,11 +1,31 @@
 package com.crud.library.reader.service;
 
+import com.crud.library.reader.domain.Reader;
 import com.crud.library.reader.repository.ReaderRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @AllArgsConstructor
 @Service
-public class ReaderServiceDb {
-    private ReaderRepository readerRepository;
+public final class ReaderServiceDb {
+    private final ReaderRepository readerRepository;
+
+    public Reader saveReader(final Reader reader) {
+        return readerRepository.save(reader);
+    }
+
+    public Optional<Reader> getReaderById(final Long id) {
+        return readerRepository.findById(id);
+    }
+
+    public List<Reader> getAllReaders() {
+        return readerRepository.findAll();
+    }
+
+    public void deleteReaderById(final Long id) {
+        readerRepository.deleteById(id);
+    }
 }

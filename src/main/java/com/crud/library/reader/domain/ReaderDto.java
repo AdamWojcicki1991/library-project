@@ -9,10 +9,10 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class ReaderDto {
-    private Long id;
-    private String name;
-    private String surname;
-    private Date createAccountDate;
-    private List<Borrow> borrows;
+public final class ReaderDto {
+    private final Long id;
+    private final String name;
+    private final String surname;
+    private final Date createAccountDate;
+    private final List<Borrow> borrows;
 }

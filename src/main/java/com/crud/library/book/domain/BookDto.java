@@ -7,8 +7,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class BookDto {
-    private Long id;
-    private Title title;
-    private BookStatus bookStatus;
+public final class BookDto {
+    private final Long id;
+    private final Title title;
+    private final BookStatus bookStatus;
 }

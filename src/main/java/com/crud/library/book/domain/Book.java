@@ -3,12 +3,14 @@ package com.crud.library.book.domain;
 import com.crud.library.book.BookStatus;
 import com.crud.library.title.domain.Title;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

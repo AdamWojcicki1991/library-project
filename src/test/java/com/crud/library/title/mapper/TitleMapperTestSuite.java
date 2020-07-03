@@ -1,4 +1,4 @@
-package com.crud.library.reader.service;
+package com.crud.library.title.mapper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,12 +8,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ReaderServiceDbTestSuite {
+public class TitleMapperTestSuite {
     @Autowired
-    private ReaderServiceDb readerServiceDb;
+    private TitleMapper titleMapper;
 
     @Test
-    public void testSaveReader() {
+    public void testMapToTitle() {
         //GIVEN
 
         //WHEN
@@ -24,7 +24,7 @@ public class ReaderServiceDbTestSuite {
     }
 
     @Test
-    public void testGetReaderById() {
+    public void testMapToTitleDto() {
         //GIVEN
 
         //WHEN
@@ -35,18 +35,7 @@ public class ReaderServiceDbTestSuite {
     }
 
     @Test
-    public void getAllReaders() {
-        //GIVEN
-
-        //WHEN
-
-        //THEN
-
-        //CLEANUP
-    }
-
-    @Test
-    public void deleteReaderById() {
+    public void testMapToTitlesDto() {
         //GIVEN
 
         //WHEN

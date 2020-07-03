@@ -2,6 +2,7 @@ package com.crud.library.reader.domain;
 
 import com.crud.library.borrow.domain.Borrow;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

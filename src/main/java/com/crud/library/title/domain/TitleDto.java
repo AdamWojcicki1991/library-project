@@ -9,10 +9,10 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class TitleDto {
-    private long id;
-    private String title;
-    private String author;
-    private LocalDate publishedYear;
-    private List<Book> books;
+public final class TitleDto {
+    private final long id;
+    private final String title;
+    private final String author;
+    private final LocalDate publishedYear;
+    private final List<Book> books;
 }
