@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Entity
 @Table(name = "BOOKS")
-public class Book {
+public final class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @NotNull

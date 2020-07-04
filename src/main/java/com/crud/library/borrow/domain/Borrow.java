@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @Getter
 @Entity
 @Table(name = "BORROWS")
-public class Borrow {
+public final class Borrow {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @NotNull
@@ -28,7 +28,7 @@ public class Borrow {
     @JoinColumn(name = "READER_ID")
     private Reader reader;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "BOOK_ID")
     private Book book;
 
@@ -40,4 +40,3 @@ public class Borrow {
     @Column(name = "RETURN_DATE")
     private LocalDate returnDate;
 }
-

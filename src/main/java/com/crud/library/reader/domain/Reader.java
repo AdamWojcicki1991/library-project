@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @Entity
 @Table(name = "READERS")
-public class Reader {
+public final class Reader {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @NotNull

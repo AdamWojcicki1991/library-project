@@ -17,7 +17,8 @@ public final class BookMapper {
     }
 
     public BookDto mapToBookDto(final Book book) {
-        return new BookDto(book.getId(),
+        return new BookDto(
+                book.getId(),
                 book.getTitle(),
                 book.getBookStatus());
     }

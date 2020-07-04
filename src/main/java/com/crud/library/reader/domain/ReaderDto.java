@@ -2,11 +2,13 @@ package com.crud.library.reader.domain;
 
 import com.crud.library.borrow.domain.Borrow;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Date;
 import java.util.List;
 
+@Builder
 @Getter
 @AllArgsConstructor
 public final class ReaderDto {
