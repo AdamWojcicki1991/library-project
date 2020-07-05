@@ -3,22 +3,22 @@ package com.crud.library.title.controller;
 import com.crud.library.title.domain.TitleDto;
 import com.crud.library.title.mapper.TitleMapper;
 import com.crud.library.title.service.TitleServiceDb;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@AllArgsConstructor
 @RestController
-@RequestMapping(value = "/v1/title", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@RequiredArgsConstructor
+@RequestMapping(value = "/v1/title")
 public final class TitleController {
-    private final TitleServiceDb titleServiceDb;
     private final TitleMapper titleMapper;
+    private final TitleServiceDb titleServiceDb;
 
     @GetMapping
-    public List<TitleDto> getBooks() {
+    public List<TitleDto> getTitles() {
         return titleMapper.mapToTitlesDto(titleServiceDb.getAllTitles());
     }
 
@@ -28,7 +28,7 @@ public final class TitleController {
                 .orElseThrow(() -> new TitleNotFoundException("Title doesn't exist in database!")));
     }
 
-    @PostMapping
+    @PostMapping(consumes = APPLICATION_JSON_VALUE)
     public void createTitle(@RequestBody final TitleDto titleDto) {
         titleServiceDb.saveTitle(titleMapper.mapToTitle(titleDto));
     }
@@ -38,7 +38,7 @@ public final class TitleController {
         return titleMapper.mapToTitleDto(titleServiceDb.saveTitle(titleMapper.mapToTitle(titleDto)));
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public void deleteTitle(@PathVariable final Long id) {
         titleServiceDb.deleteTitleById(id);
     }

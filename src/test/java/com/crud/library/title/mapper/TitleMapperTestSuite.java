@@ -1,7 +1,9 @@
 package com.crud.library.title.mapper;
 
+import com.crud.library.fixture.DataFixture;
 import com.crud.library.title.domain.Title;
 import com.crud.library.title.domain.TitleDto;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,18 +19,19 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TitleMapperTestSuite {
+    private DataFixture dataFixture;
     @Autowired
     private TitleMapper titleMapper;
 
+    @Before
+    public void setUp() {
+        dataFixture = new DataFixture();
+    }
+
     @Test
-    public void testMapToTitle() {
+    public void shouldMapToTitle() {
         //GIVEN
-        TitleDto titleDto = TitleDto.builder()
-                .id(1L)
-                .title("Title")
-                .author("Author")
-                .publishedYear(LocalDate.now())
-                .build();
+        TitleDto titleDto = dataFixture.createTitleDto();
         long titleDtoId = titleDto.getId();
         String titleFromDto = titleDto.getTitle();
         String authorDto = titleDto.getAuthor();
@@ -47,21 +50,16 @@ public class TitleMapperTestSuite {
     }
 
     @Test
-    public void testMapToTitleDto() {
+    public void shouldMapToTitleDto() {
         //GIVEN
-        Title title = Title.builder()
-                .id(1L)
-                .title("Title")
-                .author("Author")
-                .publishedYear(LocalDate.now())
-                .build();
-        long titleId = title.getId();
+        Title title = dataFixture.createTitle();
+        Long titleId = title.getId();
         String titleFromEntity = title.getTitle();
         String author = title.getAuthor();
         LocalDate publishedYear = title.getPublishedYear();
         //WHEN
         TitleDto titleDto = titleMapper.mapToTitleDto(title);
-        long titleDtoId = titleDto.getId();
+        Long titleDtoId = titleDto.getId();
         String titleFromMapper = titleDto.getTitle();
         String authorDto = titleDto.getAuthor();
         LocalDate publishedYearDto = titleDto.getPublishedYear();
@@ -73,14 +71,9 @@ public class TitleMapperTestSuite {
     }
 
     @Test
-    public void testMapToTitlesDto() {
+    public void shouldMapToTitlesDto() {
         //GIVEN
-        Title title = Title.builder()
-                .id(1L)
-                .title("Title")
-                .author("Author")
-                .publishedYear(LocalDate.now())
-                .build();
+        Title title = dataFixture.createTitle();
         List<Title> titles = new ArrayList<>();
         titles.add(title);
         //WHEN

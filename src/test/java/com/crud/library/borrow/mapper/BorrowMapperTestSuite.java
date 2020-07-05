@@ -1,151 +1,96 @@
 package com.crud.library.borrow.mapper;
 
-import com.crud.library.book.BookStatus;
 import com.crud.library.book.domain.Book;
+import com.crud.library.book.domain.BookDto;
 import com.crud.library.borrow.domain.Borrow;
 import com.crud.library.borrow.domain.BorrowDto;
+import com.crud.library.fixture.DataFixture;
 import com.crud.library.reader.domain.Reader;
+import com.crud.library.reader.domain.ReaderDto;
 import com.crud.library.title.domain.Title;
+import com.crud.library.title.domain.TitleDto;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import static com.crud.library.book.BookStatus.IN_LIBRARY;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class BorrowMapperTestSuite {
+    private DataFixture dataFixture;
     @Autowired
     private BorrowMapper borrowMapper;
 
+    @Before
+    public void setUp() {
+        dataFixture = new DataFixture();
+    }
+
     @Test
-    public void testMapToBorrow() {
+    public void shouldMapToBorrow() {
         //GIVEN
-        Title title = Title.builder()
-                .id(1L)
-                .title("Title")
-                .author("Author")
-                .publishedYear(LocalDate.now())
-                .build();
-        Book book = Book.builder()
-                .id(1L)
-                .title(title)
-                .bookStatus(BookStatus.IN_LIBRARY)
-                .build();
-        Reader reader = Reader.builder()
-                .id(1L)
-                .name("Name")
-                .surname("Surname")
-                .createAccountDate(new Date())
-                .build();
-        BorrowDto borrowDto = BorrowDto.builder()
-                .id(1L)
-                .borrowDate(LocalDate.now())
-                .returnDate(LocalDate.now())
-                .book(book)
-                .reader(reader)
-                .build();
-        long borrowDtoId = borrowDto.getId();
-        LocalDate borrowDateDto = borrowDto.getBorrowDate();
-        LocalDate returnDateDto = borrowDto.getReturnDate();
-        Book borrowBookDto = borrowDto.getBook();
-        Reader borrowReaderDto = borrowDto.getReader();
+        TitleDto title = dataFixture.createTitleDto();
+        BookDto book = dataFixture.createBookDto(title, IN_LIBRARY);
+        ReaderDto reader = dataFixture.createReaderDto();
+        BorrowDto borrowDto = dataFixture.createBorrowDto(book, reader);
         //WHEN
         Borrow borrow = borrowMapper.mapToBorrow(borrowDto);
-        long borrowId = borrow.getId();
-        LocalDate borrowDate = borrow.getBorrowDate();
-        LocalDate returnDate = borrow.getReturnDate();
-        Book borrowBook = borrow.getBook();
-        Reader borrowReader = borrow.getReader();
         //THEN
-        assertEquals(borrowDtoId, borrowId);
-        assertEquals(borrowDateDto, borrowDate);
-        assertEquals(returnDateDto, returnDate);
-        assertEquals(borrowBookDto, borrowBook);
-        assertEquals(borrowReaderDto, borrowReader);
+        assertEquals(borrowDto.getId(), borrow.getId());
+        assertEquals(borrowDto.getBook().getId(), borrow.getBook().getId());
+        assertEquals(borrowDto.getBook().getTitle().getId(), borrow.getBook().getTitle().getId());
+        assertEquals(borrowDto.getBook().getTitle().getTitle(), borrow.getBook().getTitle().getTitle());
+        assertEquals(borrowDto.getBook().getTitle().getAuthor(), borrow.getBook().getTitle().getAuthor());
+        assertEquals(borrowDto.getBook().getTitle().getPublishedYear(), borrow.getBook().getTitle().getPublishedYear());
+        assertEquals(borrowDto.getBook().getBookStatus(), borrow.getBook().getBookStatus());
+        assertEquals(borrowDto.getReader().getId(), borrow.getReader().getId());
+        assertEquals(borrowDto.getReader().getName(), borrow.getReader().getName());
+        assertEquals(borrowDto.getReader().getSurname(), borrow.getReader().getSurname());
+        assertEquals(borrowDto.getReader().getCreateAccountDate(), borrow.getReader().getCreateAccountDate());
+        assertEquals(borrowDto.getBorrowDate(), borrow.getBorrowDate());
+        assertEquals(borrowDto.getReturnDate(), borrow.getReturnDate());
     }
 
     @Test
-    public void testMapToBorrowDto() {
+    public void shouldMapToBorrowDto() {
         //GIVEN
-        Title title = Title.builder()
-                .id(1L)
-                .title("Title")
-                .author("Author")
-                .publishedYear(LocalDate.now())
-                .build();
-        Book book = Book.builder()
-                .id(1L)
-                .title(title)
-                .bookStatus(BookStatus.IN_LIBRARY)
-                .build();
-        Reader reader = Reader.builder()
-                .id(1L)
-                .name("Name")
-                .surname("Surname")
-                .createAccountDate(new Date())
-                .build();
-        Borrow borrow = Borrow.builder()
-                .id(1L)
-                .borrowDate(LocalDate.now())
-                .returnDate(LocalDate.now())
-                .book(book)
-                .reader(reader)
-                .build();
-        long borrowId = borrow.getId();
-        LocalDate borrowDate = borrow.getBorrowDate();
-        LocalDate returnDate = borrow.getReturnDate();
-        Book borrowBook = borrow.getBook();
-        Reader borrowReader = borrow.getReader();
+        Title title = dataFixture.createTitle();
+        Book book = dataFixture.createBook(title, IN_LIBRARY);
+        Reader reader = dataFixture.createReader();
+        Borrow borrow = dataFixture.createBorrow(book, reader);
         //WHEN
         BorrowDto borrowDto = borrowMapper.mapToBorrowDto(borrow);
-        long borrowDtoId = borrowDto.getId();
-        LocalDate borrowDateDto = borrowDto.getBorrowDate();
-        LocalDate returnDateDto = borrowDto.getReturnDate();
-        Book borrowBookDto = borrowDto.getBook();
-        Reader borrowReaderDto = borrowDto.getReader();
         //THEN
-        assertEquals(borrowId, borrowDtoId);
-        assertEquals(borrowDate, borrowDateDto);
-        assertEquals(returnDate, returnDateDto);
-        assertEquals(borrowBook, borrowBookDto);
-        assertEquals(borrowReader, borrowReaderDto);
+        assertEquals(borrow.getId(), borrowDto.getId());
+        assertEquals(borrow.getBook().getId(), borrowDto.getBook().getId());
+        assertEquals(borrow.getBook().getTitle().getId(), borrowDto.getBook().getTitle().getId());
+        assertEquals(borrow.getBook().getTitle().getTitle(), borrowDto.getBook().getTitle().getTitle());
+        assertEquals(borrow.getBook().getTitle().getAuthor(), borrowDto.getBook().getTitle().getAuthor());
+        assertEquals(borrow.getBook().getTitle().getPublishedYear(), borrowDto.getBook().getTitle().getPublishedYear());
+        assertEquals(borrow.getBook().getBookStatus(), borrowDto.getBook().getBookStatus());
+        assertEquals(borrow.getReader().getId(), borrowDto.getReader().getId());
+        assertEquals(borrow.getReader().getName(), borrowDto.getReader().getName());
+        assertEquals(borrow.getReader().getSurname(), borrowDto.getReader().getSurname());
+        assertEquals(borrow.getReader().getCreateAccountDate(), borrowDto.getReader().getCreateAccountDate());
+        assertEquals(borrow.getBorrowDate(), borrowDto.getBorrowDate());
+        assertEquals(borrow.getReturnDate(), borrowDto.getReturnDate());
     }
 
     @Test
-    public void testMapToBorrowsDto() {
+    public void shouldMapToBorrowsDto() {
         //GIVEN
-        Title title = Title.builder()
-                .id(1L)
-                .title("Title")
-                .author("Author")
-                .publishedYear(LocalDate.now())
-                .build();
-        Book book = Book.builder()
-                .id(1L)
-                .title(title)
-                .bookStatus(BookStatus.IN_LIBRARY)
-                .build();
-        Reader reader = Reader.builder()
-                .id(1L)
-                .name("Name")
-                .surname("Surname")
-                .createAccountDate(new Date())
-                .build();
-        Borrow borrow = Borrow.builder()
-                .id(1L)
-                .borrowDate(LocalDate.now())
-                .returnDate(LocalDate.now())
-                .book(book)
-                .reader(reader)
-                .build();
+        Title title = dataFixture.createTitle();
+        Book book = dataFixture.createBook(title, IN_LIBRARY);
+        Reader reader = dataFixture.createReader();
+        Borrow borrow = dataFixture.createBorrow(book, reader);
         List<Borrow> borrows = new ArrayList<>();
         borrows.add(borrow);
         //WHEN

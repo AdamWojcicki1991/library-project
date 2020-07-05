@@ -22,4 +22,7 @@ public interface BorrowRepository extends CrudRepository<Borrow, Long> {
 
     @Override
     void deleteById(Long id);
+
+    @Override
+    void deleteAll();
 }

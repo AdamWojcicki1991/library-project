@@ -2,13 +2,13 @@ package com.crud.library.title.service;
 
 import com.crud.library.title.domain.Title;
 import com.crud.library.title.repository.TitleRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public final class TitleServiceDb {
     private final TitleRepository titleRepository;
@@ -27,5 +27,9 @@ public final class TitleServiceDb {
 
     public void deleteTitleById(final Long id) {
         titleRepository.deleteById(id);
+    }
+
+    public void deleteAllTitles() {
+        titleRepository.deleteAll();
     }
 }

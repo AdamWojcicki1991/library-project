@@ -2,13 +2,13 @@ package com.crud.library.book.service;
 
 import com.crud.library.book.domain.Book;
 import com.crud.library.book.repository.BookRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public final class BookServiceDb {
     private final BookRepository bookRepository;
@@ -27,5 +27,9 @@ public final class BookServiceDb {
 
     public void deleteBookById(final Long id) {
         bookRepository.deleteById(id);
+    }
+
+    public void deleteAllBooks() {
+        bookRepository.deleteAll();
     }
 }

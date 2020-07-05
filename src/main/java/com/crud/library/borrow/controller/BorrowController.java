@@ -3,19 +3,19 @@ package com.crud.library.borrow.controller;
 import com.crud.library.borrow.domain.BorrowDto;
 import com.crud.library.borrow.mapper.BorrowMapper;
 import com.crud.library.borrow.service.BorrowServiceDb;
-import lombok.AllArgsConstructor;
+import com.crud.library.service.LibraryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
-@AllArgsConstructor
 @RestController
-@RequestMapping(value = "/v1/borrow", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@RequiredArgsConstructor
+@RequestMapping(value = "/v1/borrow")
 public final class BorrowController {
-    private final BorrowServiceDb borrowServiceDb;
     private final BorrowMapper borrowMapper;
+    private final BorrowServiceDb borrowServiceDb;
+    private final LibraryService libraryService;
 
     @GetMapping
     public List<BorrowDto> getBorrows() {
@@ -28,14 +28,18 @@ public final class BorrowController {
                 .orElseThrow(() -> new BorrowNotFoundException("Borrow doesn't exist in database!")));
     }
 
-    @PostMapping("/borrowBook")
-    public void borrowBook(@RequestBody final BorrowDto borrowDto) {
-        //TODO
+    @DeleteMapping("/{id}")
+    public void deleteBorrow(@PathVariable final Long id) {
+        borrowServiceDb.deleteBorrowById(id);
+    }
+
+    @PostMapping(value = "/borrowBook")
+    public void borrowBook(@RequestParam final String bookTitle, @RequestParam final Long readerId) throws ProcessCanNotBeExecutedException {
+        libraryService.executeBorrow(bookTitle, readerId);
     }
 
     @PutMapping("/returnBook")
-    public BorrowDto returnBook(@RequestBody final BorrowDto borrowDto) {
-        //TODO
-        return null;
+    public BorrowDto returnBook(@RequestParam final Long bookId, @RequestParam final Long readerId) throws ProcessCanNotBeExecutedException {
+        return borrowMapper.mapToBorrowDto(libraryService.executeReturn(bookId, readerId));
     }
 }

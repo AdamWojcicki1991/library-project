@@ -3,95 +3,80 @@ package com.crud.library.book.mapper;
 import com.crud.library.book.BookStatus;
 import com.crud.library.book.domain.Book;
 import com.crud.library.book.domain.BookDto;
+import com.crud.library.fixture.DataFixture;
 import com.crud.library.title.domain.Title;
+import com.crud.library.title.domain.TitleDto;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.crud.library.book.BookStatus.IN_LIBRARY;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class BookMapperTestSuite {
+    private DataFixture dataFixture;
     @Autowired
     private BookMapper bookMapper;
 
+    @Before
+    public void setUp() {
+        dataFixture = new DataFixture();
+    }
+
     @Test
-    public void testMapToBook() {
+    public void shouldMapToBook() {
         //GIVEN
-        Title title = Title.builder()
-                .id(1L)
-                .title("Title")
-                .author("Author")
-                .publishedYear(LocalDate.now())
-                .build();
-        BookDto bookDto = BookDto.builder()
-                .id(1L)
-                .title(title)
-                .bookStatus(BookStatus.IN_LIBRARY)
-                .build();
+        BookDto bookDto = dataFixture.createBookDto(dataFixture.createTitleDto(), IN_LIBRARY);
         long bookDtoId = bookDto.getId();
-        Title titleDto = bookDto.getTitle();
+        TitleDto titleDto = bookDto.getTitle();
         BookStatus bookStatusDto = bookDto.getBookStatus();
         //WHEN
         Book book = bookMapper.mapToBook(bookDto);
-        long bookId = book.getId();
-        Title titleFromMapper = book.getTitle();
-        BookStatus bookStatus = book.getBookStatus();
+        long bookIdAfterMapping = book.getId();
+        Title titleAfterMapping = book.getTitle();
+        BookStatus bookStatusAfterMapping = book.getBookStatus();
         //THEN
-        assertEquals(bookDtoId, bookId);
-        assertEquals(titleDto, titleFromMapper);
-        assertEquals(bookStatusDto, bookStatus);
+        assertEquals(bookDtoId, bookIdAfterMapping);
+        assertEquals(titleDto.getId(), titleAfterMapping.getId());
+        assertEquals(titleDto.getAuthor(), titleAfterMapping.getAuthor());
+        assertEquals(titleDto.getTitle(), titleAfterMapping.getTitle());
+        assertEquals(titleDto.getPublishedYear(), titleAfterMapping.getPublishedYear());
+        assertEquals(bookStatusDto, bookStatusAfterMapping);
     }
 
     @Test
-    public void testMapToBookDto() {
+    public void shouldMapToBookDto() {
         //GIVEN
-        Title title = Title.builder()
-                .id(1L)
-                .title("Title")
-                .author("Author")
-                .publishedYear(LocalDate.now())
-                .build();
-        Book book = Book.builder()
-                .id(1L)
-                .title(title)
-                .bookStatus(BookStatus.IN_LIBRARY)
-                .build();
-        long bookId = book.getId();
-        Title bookTitleFromEntity = book.getTitle();
+        Book book = dataFixture.createBook(dataFixture.createTitle(), IN_LIBRARY);
+        Long bookId = book.getId();
+        Title title = book.getTitle();
         BookStatus bookStatus = book.getBookStatus();
         //WHEN
         BookDto bookDto = bookMapper.mapToBookDto(book);
-        long bookDtoId = bookDto.getId();
-        Title bookTitleDto = bookDto.getTitle();
-        BookStatus bookStatusDto = bookDto.getBookStatus();
+        Long bookDtoIdAfterMapping = bookDto.getId();
+        TitleDto titleDtoAfterMapping = bookDto.getTitle();
+        BookStatus bookStatusDtoAfterMapping = bookDto.getBookStatus();
         //THEN
-        assertEquals(bookId, bookDtoId);
-        assertEquals(bookTitleFromEntity, bookTitleDto);
-        assertEquals(bookStatus, bookStatusDto);
+        assertEquals(bookId, bookDtoIdAfterMapping);
+        assertEquals(title.getId(), titleDtoAfterMapping.getId());
+        assertEquals(title.getAuthor(), titleDtoAfterMapping.getAuthor());
+        assertEquals(title.getTitle(), titleDtoAfterMapping.getTitle());
+        assertEquals(title.getPublishedYear(), titleDtoAfterMapping.getPublishedYear());
+        assertEquals(bookStatus, bookStatusDtoAfterMapping);
     }
 
     @Test
-    public void testMapToBooksDto() {
+    public void shouldMapToBooksDto() {
         //GIVEN
-        Title title = Title.builder()
-                .id(1L)
-                .title("Title")
-                .author("Author")
-                .publishedYear(LocalDate.now())
-                .build();
-        Book book = Book.builder()
-                .id(1L)
-                .title(title)
-                .bookStatus(BookStatus.IN_LIBRARY)
-                .build();
+        Book book = dataFixture.createBook(dataFixture.createTitle(), IN_LIBRARY);
         List<Book> books = new ArrayList<>();
         books.add(book);
         //WHEN

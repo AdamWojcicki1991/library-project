@@ -22,4 +22,7 @@ public interface TitleRepository extends CrudRepository<Title, Long> {
 
     @Override
     void deleteById(Long id);
+
+    @Override
+    void deleteAll();
 }

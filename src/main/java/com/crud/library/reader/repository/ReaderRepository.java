@@ -22,4 +22,7 @@ public interface ReaderRepository extends CrudRepository<Reader, Long> {
 
     @Override
     void deleteById(Long id);
+
+    @Override
+    void deleteAll();
 }

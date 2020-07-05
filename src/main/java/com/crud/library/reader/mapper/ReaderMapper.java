@@ -10,20 +10,21 @@ import java.util.stream.Collectors;
 @Component
 public final class ReaderMapper {
     public Reader mapToReader(final ReaderDto readerDto) {
-        return new Reader(
-                readerDto.getId(),
-                readerDto.getName(), readerDto.getSurname(),
-                readerDto.getCreateAccountDate(),
-                readerDto.getBorrows());
+        return Reader.builder()
+                .id(readerDto.getId())
+                .name(readerDto.getName())
+                .surname(readerDto.getSurname())
+                .createAccountDate(readerDto.getCreateAccountDate())
+                .build();
     }
 
     public ReaderDto mapToReaderDto(final Reader reader) {
-        return new ReaderDto(
-                reader.getId(),
-                reader.getName(),
-                reader.getSurname(),
-                reader.getCreateAccountDate(),
-                reader.getBorrows());
+        return ReaderDto.builder()
+                .id(reader.getId())
+                .name(reader.getName())
+                .surname(reader.getSurname())
+                .createAccountDate(reader.getCreateAccountDate())
+                .build();
     }
 
     public List<ReaderDto> mapToReadersDto(final List<Reader> readers) {
@@ -32,8 +33,7 @@ public final class ReaderMapper {
                         reader.getId(),
                         reader.getName(),
                         reader.getSurname(),
-                        reader.getCreateAccountDate(),
-                        reader.getBorrows()))
+                        reader.getCreateAccountDate()))
                 .collect(Collectors.toList());
     }
 }

@@ -1,10 +1,7 @@
 package com.crud.library.title.domain;
 
 import com.crud.library.book.domain.Book;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,14 +11,13 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Getter
 @Entity
 @Table(name = "TITLES")
 public final class Title {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @NotNull
-    @Column(name = "ID", unique = true)
     private Long id;
 
     @Column(name = "TITLE")
@@ -37,7 +33,6 @@ public final class Title {
     @OneToMany(
             targetEntity = Book.class,
             mappedBy = "title",
-            cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
     private List<Book> books;

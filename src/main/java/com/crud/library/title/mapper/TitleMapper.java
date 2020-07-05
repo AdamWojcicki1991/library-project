@@ -10,21 +10,21 @@ import java.util.stream.Collectors;
 @Component
 public final class TitleMapper {
     public Title mapToTitle(final TitleDto titleDto) {
-        return new Title(
-                titleDto.getId(),
-                titleDto.getTitle(),
-                titleDto.getAuthor(),
-                titleDto.getPublishedYear(),
-                titleDto.getBooks());
+        return Title.builder()
+                .id(titleDto.getId())
+                .title(titleDto.getTitle())
+                .author(titleDto.getAuthor())
+                .publishedYear(titleDto.getPublishedYear())
+                .build();
     }
 
     public TitleDto mapToTitleDto(final Title title) {
-        return new TitleDto(
-                title.getId(),
-                title.getTitle(),
-                title.getAuthor(),
-                title.getPublishedYear(),
-                title.getBooks());
+        return TitleDto.builder()
+                .id(title.getId())
+                .title(title.getTitle())
+                .author(title.getAuthor())
+                .publishedYear(title.getPublishedYear())
+                .build();
     }
 
     public List<TitleDto> mapToTitlesDto(final List<Title> titles) {
@@ -33,8 +33,7 @@ public final class TitleMapper {
                         title.getId(),
                         title.getTitle(),
                         title.getAuthor(),
-                        title.getPublishedYear(),
-                        title.getBooks()))
+                        title.getPublishedYear()))
                 .collect(Collectors.toList());
     }
 }

@@ -2,13 +2,13 @@ package com.crud.library.borrow.service;
 
 import com.crud.library.borrow.domain.Borrow;
 import com.crud.library.borrow.repository.BorrowRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public final class BorrowServiceDb {
     private final BorrowRepository borrowRepository;
@@ -27,5 +27,9 @@ public final class BorrowServiceDb {
 
     public void deleteBorrowById(final Long id) {
         borrowRepository.deleteById(id);
+    }
+
+    public void deleteAllBorrows() {
+        borrowRepository.deleteAll();
     }
 }

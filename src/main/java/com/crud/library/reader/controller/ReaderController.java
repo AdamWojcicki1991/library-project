@@ -3,22 +3,22 @@ package com.crud.library.reader.controller;
 import com.crud.library.reader.domain.ReaderDto;
 import com.crud.library.reader.mapper.ReaderMapper;
 import com.crud.library.reader.service.ReaderServiceDb;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@AllArgsConstructor
 @RestController
-@RequestMapping(value = "/v1/reader", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@RequiredArgsConstructor
+@RequestMapping(value = "/v1/reader")
 public final class ReaderController {
-    private final ReaderServiceDb readerServiceDb;
     private final ReaderMapper readerMapper;
+    private final ReaderServiceDb readerServiceDb;
 
     @GetMapping
-    public List<ReaderDto> getBooks() {
+    public List<ReaderDto> getReaders() {
         return readerMapper.mapToReadersDto(readerServiceDb.getAllReaders());
     }
 
@@ -28,7 +28,7 @@ public final class ReaderController {
                 .orElseThrow(() -> new ReaderNotFoundException("Reader doesn't exist in database!")));
     }
 
-    @PostMapping
+    @PostMapping(consumes = APPLICATION_JSON_VALUE)
     public void createReader(@RequestBody final ReaderDto readerDto) {
         readerServiceDb.saveReader(readerMapper.mapToReader(readerDto));
     }

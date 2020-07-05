@@ -1,7 +1,9 @@
 package com.crud.library.reader.mapper;
 
+import com.crud.library.fixture.DataFixture;
 import com.crud.library.reader.domain.Reader;
 import com.crud.library.reader.domain.ReaderDto;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,18 +19,19 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ReaderMapperTestSuite {
+    private DataFixture dataFixture;
     @Autowired
     private ReaderMapper readerMapper;
 
+    @Before
+    public void setUp() {
+        dataFixture = new DataFixture();
+    }
+
     @Test
-    public void testMapToReader() {
+    public void shouldMapToReader() {
         //GIVEN
-        ReaderDto readerDto = ReaderDto.builder()
-                .id(1L)
-                .name("Name")
-                .surname("Surname")
-                .createAccountDate(new Date())
-                .build();
+        ReaderDto readerDto = dataFixture.createReaderDto();
         long readerDtoId = readerDto.getId();
         String readerNameDto = readerDto.getName();
         String readerSurnameDto = readerDto.getSurname();
@@ -47,21 +50,16 @@ public class ReaderMapperTestSuite {
     }
 
     @Test
-    public void testMapToReaderDto() {
+    public void shouldMapToReaderDto() {
         //GIVEN
-        Reader reader = Reader.builder()
-                .id(1L)
-                .name("Name")
-                .surname("Surname")
-                .createAccountDate(new Date())
-                .build();
-        long readerId = reader.getId();
+        Reader reader = dataFixture.createReader();
+        Long readerId = reader.getId();
         String readerName = reader.getName();
         String readerSurname = reader.getSurname();
         Date readerCreateAccountDate = reader.getCreateAccountDate();
         //WHEN
         ReaderDto readerDto = readerMapper.mapToReaderDto(reader);
-        long readerDtoId = readerDto.getId();
+        Long readerDtoId = readerDto.getId();
         String readerNameDto = readerDto.getName();
         String readerSurnameDto = readerDto.getSurname();
         Date readerCreateAccountDateDto = readerDto.getCreateAccountDate();
@@ -73,14 +71,9 @@ public class ReaderMapperTestSuite {
     }
 
     @Test
-    public void testMapToReadersDto() {
+    public void shouldMapToReadersDto() {
         //GIVEN
-        Reader reader = Reader.builder()
-                .id(1L)
-                .name("Name")
-                .surname("Surname")
-                .createAccountDate(new Date())
-                .build();
+        Reader reader = dataFixture.createReader();
         List<Reader> readers = new ArrayList<>();
         readers.add(reader);
         //WHEN

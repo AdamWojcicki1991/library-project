@@ -2,32 +2,39 @@ package com.crud.library.book.mapper;
 
 import com.crud.library.book.domain.Book;
 import com.crud.library.book.domain.BookDto;
+import com.crud.library.title.mapper.TitleMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public final class BookMapper {
+    private final TitleMapper titleMapper;
+
     public Book mapToBook(final BookDto bookDto) {
-        return new Book(
-                bookDto.getId(),
-                bookDto.getTitle(),
-                bookDto.getBookStatus());
+        return Book.builder()
+                .id(bookDto.getId())
+                .title(titleMapper.mapToTitle(bookDto.getTitle()))
+                .bookStatus(bookDto.getBookStatus())
+                .build();
     }
 
     public BookDto mapToBookDto(final Book book) {
-        return new BookDto(
-                book.getId(),
-                book.getTitle(),
-                book.getBookStatus());
+        return BookDto.builder()
+                .id(book.getId())
+                .title(titleMapper.mapToTitleDto(book.getTitle()))
+                .bookStatus(book.getBookStatus())
+                .build();
     }
 
     public List<BookDto> mapToBooksDto(final List<Book> books) {
         return books.stream()
                 .map(book -> new BookDto(
                         book.getId(),
-                        book.getTitle(),
+                        titleMapper.mapToTitleDto(book.getTitle()),
                         book.getBookStatus()))
                 .collect(Collectors.toList());
     }

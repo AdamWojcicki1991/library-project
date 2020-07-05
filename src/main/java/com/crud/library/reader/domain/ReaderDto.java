@@ -1,20 +1,19 @@
 package com.crud.library.reader.domain;
 
-import com.crud.library.borrow.domain.Borrow;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
 @Builder
 @Getter
-@AllArgsConstructor
+@EqualsAndHashCode
+@RequiredArgsConstructor
 public final class ReaderDto {
     private final Long id;
     private final String name;
     private final String surname;
     private final Date createAccountDate;
-    private final List<Borrow> borrows;
 }
