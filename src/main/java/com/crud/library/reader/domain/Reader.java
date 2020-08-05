@@ -28,7 +28,7 @@ public final class Reader {
 
     @NotNull
     @Column(name = "CREATE_ACCOUNT_DATE")
-    private Date createAccountDate;
+    private final Date createAccountDate = new Date();
 
     @OneToMany(
             targetEntity = Borrow.class,

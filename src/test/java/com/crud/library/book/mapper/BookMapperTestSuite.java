@@ -13,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.crud.library.book.BookStatus.IN_LIBRARY;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -34,7 +36,7 @@ public class BookMapperTestSuite {
     @Test
     public void shouldMapToBook() {
         //GIVEN
-        BookDto bookDto = dataFixture.createBookDto(dataFixture.createTitleDto(), IN_LIBRARY);
+        BookDto bookDto = dataFixture.getBookDto(dataFixture.getTitleDto(), IN_LIBRARY);
         long bookDtoId = bookDto.getId();
         TitleDto titleDto = bookDto.getTitle();
         BookStatus bookStatusDto = bookDto.getBookStatus();
@@ -55,7 +57,7 @@ public class BookMapperTestSuite {
     @Test
     public void shouldMapToBookDto() {
         //GIVEN
-        Book book = dataFixture.createBook(dataFixture.createTitle(), IN_LIBRARY);
+        Book book = dataFixture.getBook(dataFixture.getTitle(), IN_LIBRARY);
         Long bookId = book.getId();
         Title title = book.getTitle();
         BookStatus bookStatus = book.getBookStatus();
@@ -76,12 +78,18 @@ public class BookMapperTestSuite {
     @Test
     public void shouldMapToBooksDto() {
         //GIVEN
-        Book book = dataFixture.createBook(dataFixture.createTitle(), IN_LIBRARY);
+        Book book = dataFixture.getBook(dataFixture.getTitle(), IN_LIBRARY);
         List<Book> books = new ArrayList<>();
         books.add(book);
         //WHEN
         List<BookDto> booksDto = bookMapper.mapToBooksDto(books);
         //THEN
         assertEquals(1, booksDto.size());
+        assertNull(booksDto.get(0).getId());
+        assertEquals(IN_LIBRARY, booksDto.get(0).getBookStatus());
+        assertNull(booksDto.get(0).getTitle().getId());
+        assertEquals("Author", booksDto.get(0).getTitle().getAuthor());
+        assertEquals("Title", booksDto.get(0).getTitle().getTitle());
+        assertEquals(LocalDate.now(), booksDto.get(0).getTitle().getPublishedYear());
     }
 }

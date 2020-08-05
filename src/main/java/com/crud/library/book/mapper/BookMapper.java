@@ -32,10 +32,11 @@ public final class BookMapper {
 
     public List<BookDto> mapToBooksDto(final List<Book> books) {
         return books.stream()
-                .map(book -> new BookDto(
-                        book.getId(),
-                        titleMapper.mapToTitleDto(book.getTitle()),
-                        book.getBookStatus()))
+                .map(book -> BookDto.builder()
+                        .id(book.getId())
+                        .title(titleMapper.mapToTitleDto(book.getTitle()))
+                        .bookStatus(book.getBookStatus())
+                        .build())
                 .collect(Collectors.toList());
     }
 }

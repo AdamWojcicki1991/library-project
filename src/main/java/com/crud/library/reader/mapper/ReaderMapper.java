@@ -14,7 +14,6 @@ public final class ReaderMapper {
                 .id(readerDto.getId())
                 .name(readerDto.getName())
                 .surname(readerDto.getSurname())
-                .createAccountDate(readerDto.getCreateAccountDate())
                 .build();
     }
 
@@ -29,11 +28,12 @@ public final class ReaderMapper {
 
     public List<ReaderDto> mapToReadersDto(final List<Reader> readers) {
         return readers.stream()
-                .map(reader -> new ReaderDto(
-                        reader.getId(),
-                        reader.getName(),
-                        reader.getSurname(),
-                        reader.getCreateAccountDate()))
+                .map(reader -> ReaderDto.builder()
+                        .id(reader.getId())
+                        .name(reader.getName())
+                        .surname(reader.getSurname())
+                        .createAccountDate(reader.getCreateAccountDate())
+                        .build())
                 .collect(Collectors.toList());
     }
 }

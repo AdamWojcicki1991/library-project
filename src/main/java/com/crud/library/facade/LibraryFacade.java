@@ -1,4 +1,4 @@
-package com.crud.library.service;
+package com.crud.library.facade;
 
 import com.crud.library.book.BookStatus;
 import com.crud.library.book.domain.Book;
@@ -20,7 +20,7 @@ import static com.crud.library.book.BookStatus.*;
 
 @RequiredArgsConstructor
 @Service
-public final class LibraryService {
+public final class LibraryFacade {
     private final BookServiceDb bookServiceDb;
     private final BorrowServiceDb borrowServiceDb;
     private final ReaderServiceDb readerServiceDb;
@@ -32,16 +32,15 @@ public final class LibraryService {
                 .collect(Collectors.toList());
     }
 
-    public List<Borrow> findBorrowedBookByReaderId(final Long bookId, final Long readerId) {
+    public List<Borrow> findBorrowedBookByReader(final Long readerId) {
         return borrowServiceDb.getAllBorrows().stream()
                 .filter(borrow -> borrow.getReader().getId().equals(readerId))
-                .filter(borrow -> borrow.getBook().getId().equals(bookId))
                 .filter(borrow -> borrow.getBook().getBookStatus() == IN_CIRCULATION || borrow.getBook().getBookStatus() == LOST)
                 .collect(Collectors.toList());
     }
 
-    public void executeBorrow(final String bookTitle, final Long readerId) throws ProcessCanNotBeExecutedException {
-        List<Book> books = findAvailableBooks(bookTitle);
+    public void executeBorrow(final String title, final Long readerId) throws ProcessCanNotBeExecutedException {
+        List<Book> books = findAvailableBooks(title);
         Optional<Reader> reader = readerServiceDb.getReaderById(readerId);
         if (!books.isEmpty() && reader.isPresent()) {
             Borrow borrow = updateBorrowedBook(updateBookStatus(books.get(0), IN_CIRCULATION), reader.get());
@@ -52,7 +51,7 @@ public final class LibraryService {
     }
 
     public Borrow executeReturn(final Long bookId, final Long readerId) throws ProcessCanNotBeExecutedException {
-        List<Borrow> borrows = findBorrowedBookByReaderId(bookId, readerId);
+        List<Borrow> borrows = findBorrowedBook(bookId, readerId);
         Optional<Reader> reader = readerServiceDb.getReaderById(readerId);
         if (!borrows.isEmpty() && reader.isPresent()) {
             Borrow borrow = updateReturnedBook(updateBookStatus(borrows.get(0).getBook(), IN_LIBRARY), borrows.get(0));
@@ -60,6 +59,14 @@ public final class LibraryService {
         } else {
             throw new ProcessCanNotBeExecutedException("Return can not be executed! - Reader or Book not found.");
         }
+    }
+
+    private List<Borrow> findBorrowedBook(final Long bookId, final Long readerId) {
+        return borrowServiceDb.getAllBorrows().stream()
+                .filter(borrow -> borrow.getReader().getId().equals(readerId))
+                .filter(borrow -> borrow.getBook().getId().equals(bookId))
+                .filter(borrow -> borrow.getBook().getBookStatus() == IN_CIRCULATION || borrow.getBook().getBookStatus() == LOST)
+                .collect(Collectors.toList());
     }
 
     private Book updateBookStatus(final Book book, final BookStatus bookStatus) {

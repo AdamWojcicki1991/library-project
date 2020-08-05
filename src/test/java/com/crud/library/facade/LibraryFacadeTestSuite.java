@@ -1,4 +1,4 @@
-package com.crud.library.service;
+package com.crud.library.facade;
 
 import com.crud.library.book.domain.Book;
 import com.crud.library.book.service.BookServiceDb;
@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class LibraryServiceTestSuite {
+public class LibraryFacadeTestSuite {
     private DataFixture dataFixture;
     @Autowired
     private ReaderServiceDb readerServiceDb;
@@ -37,7 +37,7 @@ public class LibraryServiceTestSuite {
     @Autowired
     private TitleServiceDb titleServiceDb;
     @Autowired
-    private LibraryService libraryService;
+    private LibraryFacade libraryFacade;
 
     @Before
     public void setUp() {
@@ -56,54 +56,50 @@ public class LibraryServiceTestSuite {
     @Test
     public void shouldFindAvailableBooks() {
         //GIVEN
-        Title title = dataFixture.createTitle();
+        Title title = dataFixture.getTitle();
         titleServiceDb.saveTitle(title);
-        bookServiceDb.saveBook(dataFixture.createBook(title, IN_LIBRARY));
-        bookServiceDb.saveBook(dataFixture.createBook(title, IN_CIRCULATION));
-        bookServiceDb.saveBook(dataFixture.createBook(title, LOST));
+        bookServiceDb.saveBook(dataFixture.getBook(title, IN_LIBRARY));
+        bookServiceDb.saveBook(dataFixture.getBook(title, IN_CIRCULATION));
+        bookServiceDb.saveBook(dataFixture.getBook(title, LOST));
         //WHEN
-        List<Book> books = libraryService.findAvailableBooks("Title");
+        List<Book> books = libraryFacade.findAvailableBooks("Title");
         //THEN
         assertEquals(1, books.size());
         assertEquals(IN_LIBRARY, books.get(0).getBookStatus());
     }
 
     @Test
-    public void shouldFindBorrowsByReaderId() {
+    public void shouldFindAllBorrowedBookByReader() {
         //GIVEN
-        Title title = dataFixture.createTitle();
-        Book firstBook = dataFixture.createBook(title, IN_LIBRARY);
-        Book secondBook = dataFixture.createBook(title, IN_CIRCULATION);
-        Book thirdBook = dataFixture.createBook(title, LOST);
-        Reader reader = dataFixture.createReader();
+        Title title = dataFixture.getTitle();
+        Book firstBook = dataFixture.getBook(title, IN_LIBRARY);
+        Book secondBook = dataFixture.getBook(title, IN_CIRCULATION);
+        Book thirdBook = dataFixture.getBook(title, LOST);
+        Reader reader = dataFixture.getReader();
         titleServiceDb.saveTitle(title);
-        long bookInLibraryId = bookServiceDb.saveBook(firstBook).getId();
-        long bookInCirculationId = bookServiceDb.saveBook(secondBook).getId();
-        long bookLostId = bookServiceDb.saveBook(thirdBook).getId();
+        bookServiceDb.saveBook(firstBook);
+        bookServiceDb.saveBook(secondBook);
+        bookServiceDb.saveBook(thirdBook);
         long readerId = readerServiceDb.saveReader(reader).getId();
-        borrowServiceDb.saveBorrow(dataFixture.createBorrow(firstBook, reader));
-        borrowServiceDb.saveBorrow(dataFixture.createBorrow(secondBook, reader));
-        borrowServiceDb.saveBorrow(dataFixture.createBorrow(thirdBook, reader));
+        borrowServiceDb.saveBorrow(dataFixture.getBorrow(firstBook, reader));
+        borrowServiceDb.saveBorrow(dataFixture.getBorrow(secondBook, reader));
+        borrowServiceDb.saveBorrow(dataFixture.getBorrow(thirdBook, reader));
         //WHEN
-        List<Borrow> borrowsInLibrary = libraryService.findBorrowedBookByReaderId(bookInLibraryId, readerId);
-        List<Borrow> borrowsInCirculation = libraryService.findBorrowedBookByReaderId(bookInCirculationId, readerId);
-        List<Borrow> borrowsLost = libraryService.findBorrowedBookByReaderId(bookLostId, readerId);
+        List<Borrow> borrowsByReader = libraryFacade.findBorrowedBookByReader(readerId);
         //THEN
-        assertEquals(0, borrowsInLibrary.size());
-        assertEquals(1, borrowsInCirculation.size());
-        assertEquals(1, borrowsLost.size());
-        assertEquals(IN_CIRCULATION, borrowsInCirculation.get(0).getBook().getBookStatus());
-        assertEquals(LOST, borrowsLost.get(0).getBook().getBookStatus());
+        assertEquals(2, borrowsByReader.size());
+        assertEquals(IN_CIRCULATION, borrowsByReader.get(0).getBook().getBookStatus());
+        assertEquals(LOST, borrowsByReader.get(1).getBook().getBookStatus());
     }
 
     @Test
     public void shouldExecuteBorrow() {
         //GIVEN
-        Title title = dataFixture.createTitle();
-        Book firstBook = dataFixture.createBook(title, IN_LIBRARY);
-        Book secondBook = dataFixture.createBook(title, IN_CIRCULATION);
-        Book thirdBook = dataFixture.createBook(title, LOST);
-        Reader reader = dataFixture.createReader();
+        Title title = dataFixture.getTitle();
+        Book firstBook = dataFixture.getBook(title, IN_LIBRARY);
+        Book secondBook = dataFixture.getBook(title, IN_CIRCULATION);
+        Book thirdBook = dataFixture.getBook(title, LOST);
+        Reader reader = dataFixture.getReader();
         titleServiceDb.saveTitle(title);
         long readerId = readerServiceDb.saveReader(reader).getId();
         long firstBookId = bookServiceDb.saveBook(firstBook).getId();
@@ -113,7 +109,7 @@ public class LibraryServiceTestSuite {
         List<Borrow> borrowsBeforeExecuteBorrow = borrowServiceDb.getAllBorrows();
         //WHEN
         try {
-            libraryService.executeBorrow("Title", readerId);
+            libraryFacade.executeBorrow("Title", readerId);
         } catch (ProcessCanNotBeExecutedException e) {
             e.printStackTrace();
         }
@@ -132,10 +128,10 @@ public class LibraryServiceTestSuite {
     @Test
     public void shouldExecuteReturn() {
         //GIVEN
-        Title title = dataFixture.createTitle();
-        Book book = dataFixture.createBook(title, IN_CIRCULATION);
-        Reader reader = dataFixture.createReader();
-        Borrow borrow = dataFixture.createBorrow(book, reader);
+        Title title = dataFixture.getTitle();
+        Book book = dataFixture.getBook(title, IN_CIRCULATION);
+        Reader reader = dataFixture.getReader();
+        Borrow borrow = dataFixture.getBorrow(book, reader);
         titleServiceDb.saveTitle(title);
         long bookId = bookServiceDb.saveBook(book).getId();
         long readerId = readerServiceDb.saveReader(reader).getId();
@@ -143,7 +139,7 @@ public class LibraryServiceTestSuite {
         List<Borrow> borrowsBeforeExecuteReturn = borrowServiceDb.getAllBorrows();
         //WHEN
         try {
-            libraryService.executeReturn(bookId, readerId);
+            libraryFacade.executeReturn(bookId, readerId);
         } catch (ProcessCanNotBeExecutedException e) {
             e.printStackTrace();
         }

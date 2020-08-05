@@ -38,12 +38,13 @@ public final class BorrowMapper {
 
     public List<BorrowDto> mapToBorrowsDto(final List<Borrow> borrows) {
         return borrows.stream()
-                .map(borrow -> new BorrowDto(
-                        borrow.getId(),
-                        readerMapper.mapToReaderDto(borrow.getReader()),
-                        bookMapper.mapToBookDto(borrow.getBook()),
-                        borrow.getBorrowDate(),
-                        borrow.getReturnDate()))
+                .map(borrow -> BorrowDto.builder()
+                        .id(borrow.getId())
+                        .reader(readerMapper.mapToReaderDto(borrow.getReader()))
+                        .book(bookMapper.mapToBookDto(borrow.getBook()))
+                        .borrowDate(borrow.getBorrowDate())
+                        .returnDate(borrow.getReturnDate())
+                        .build())
                 .collect(Collectors.toList());
     }
 }

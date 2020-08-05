@@ -16,11 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.crud.library.book.BookStatus.IN_LIBRARY;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -37,9 +40,9 @@ public class BorrowMapperTestSuite {
     @Test
     public void shouldMapToBorrow() {
         //GIVEN
-        TitleDto title = dataFixture.createTitleDto();
-        BookDto book = dataFixture.createBookDto(title, IN_LIBRARY);
-        ReaderDto reader = dataFixture.createReaderDto();
+        TitleDto title = dataFixture.getTitleDto();
+        BookDto book = dataFixture.getBookDto(title, IN_LIBRARY);
+        ReaderDto reader = dataFixture.getReaderDto();
         BorrowDto borrowDto = dataFixture.createBorrowDto(book, reader);
         //WHEN
         Borrow borrow = borrowMapper.mapToBorrow(borrowDto);
@@ -62,10 +65,10 @@ public class BorrowMapperTestSuite {
     @Test
     public void shouldMapToBorrowDto() {
         //GIVEN
-        Title title = dataFixture.createTitle();
-        Book book = dataFixture.createBook(title, IN_LIBRARY);
-        Reader reader = dataFixture.createReader();
-        Borrow borrow = dataFixture.createBorrow(book, reader);
+        Title title = dataFixture.getTitle();
+        Book book = dataFixture.getBook(title, IN_LIBRARY);
+        Reader reader = dataFixture.getReader();
+        Borrow borrow = dataFixture.getBorrow(book, reader);
         //WHEN
         BorrowDto borrowDto = borrowMapper.mapToBorrowDto(borrow);
         //THEN
@@ -87,15 +90,31 @@ public class BorrowMapperTestSuite {
     @Test
     public void shouldMapToBorrowsDto() {
         //GIVEN
-        Title title = dataFixture.createTitle();
-        Book book = dataFixture.createBook(title, IN_LIBRARY);
-        Reader reader = dataFixture.createReader();
-        Borrow borrow = dataFixture.createBorrow(book, reader);
+        Title title = dataFixture.getTitle();
+        Book book = dataFixture.getBook(title, IN_LIBRARY);
+        Reader reader = dataFixture.getReader();
+        Borrow borrow = dataFixture.getBorrow(book, reader);
+        Date createAccountDate = reader.getCreateAccountDate();
+        LocalDate borrowDate = borrow.getBorrowDate();
+        LocalDate returnDate = borrow.getReturnDate();
         List<Borrow> borrows = new ArrayList<>();
         borrows.add(borrow);
         //WHEN
         List<BorrowDto> borrowsDto = borrowMapper.mapToBorrowsDto(borrows);
         //THEN
         assertEquals(1, borrowsDto.size());
+        assertNull(borrowsDto.get(0).getId());
+        assertEquals(borrowDate, borrowsDto.get(0).getBorrowDate());
+        assertEquals(returnDate, borrowsDto.get(0).getReturnDate());
+        assertNull(borrowsDto.get(0).getBook().getId());
+        assertEquals(IN_LIBRARY, borrowsDto.get(0).getBook().getBookStatus());
+        assertNull(borrowsDto.get(0).getBook().getTitle().getId());
+        assertEquals("Author", borrowsDto.get(0).getBook().getTitle().getAuthor());
+        assertEquals("Title", borrowsDto.get(0).getBook().getTitle().getTitle());
+        assertEquals(LocalDate.now(), borrowsDto.get(0).getBook().getTitle().getPublishedYear());
+        assertNull(borrowsDto.get(0).getReader().getId());
+        assertEquals("Name", borrowsDto.get(0).getReader().getName());
+        assertEquals("Surname", borrowsDto.get(0).getReader().getSurname());
+        assertEquals(createAccountDate, borrowsDto.get(0).getReader().getCreateAccountDate());
     }
 }

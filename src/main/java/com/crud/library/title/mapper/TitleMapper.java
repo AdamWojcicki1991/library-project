@@ -29,11 +29,12 @@ public final class TitleMapper {
 
     public List<TitleDto> mapToTitlesDto(final List<Title> titles) {
         return titles.stream()
-                .map(title -> new TitleDto(
-                        title.getId(),
-                        title.getTitle(),
-                        title.getAuthor(),
-                        title.getPublishedYear()))
+                .map(title -> TitleDto.builder()
+                        .id(title.getId())
+                        .title(title.getTitle())
+                        .author(title.getAuthor())
+                        .publishedYear(title.getPublishedYear())
+                        .build())
                 .collect(Collectors.toList());
     }
 }

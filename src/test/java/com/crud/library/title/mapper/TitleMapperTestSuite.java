@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -31,7 +32,7 @@ public class TitleMapperTestSuite {
     @Test
     public void shouldMapToTitle() {
         //GIVEN
-        TitleDto titleDto = dataFixture.createTitleDto();
+        TitleDto titleDto = dataFixture.getTitleDto();
         long titleDtoId = titleDto.getId();
         String titleFromDto = titleDto.getTitle();
         String authorDto = titleDto.getAuthor();
@@ -52,7 +53,7 @@ public class TitleMapperTestSuite {
     @Test
     public void shouldMapToTitleDto() {
         //GIVEN
-        Title title = dataFixture.createTitle();
+        Title title = dataFixture.getTitle();
         Long titleId = title.getId();
         String titleFromEntity = title.getTitle();
         String author = title.getAuthor();
@@ -73,12 +74,16 @@ public class TitleMapperTestSuite {
     @Test
     public void shouldMapToTitlesDto() {
         //GIVEN
-        Title title = dataFixture.createTitle();
+        Title title = dataFixture.getTitle();
         List<Title> titles = new ArrayList<>();
         titles.add(title);
         //WHEN
         List<TitleDto> titlesDto = titleMapper.mapToTitlesDto(titles);
         //THEN
         assertEquals(1, titlesDto.size());
+        assertNull(titlesDto.get(0).getId());
+        assertEquals("Author", titlesDto.get(0).getAuthor());
+        assertEquals("Title", titlesDto.get(0).getTitle());
+        assertEquals(LocalDate.now(), titlesDto.get(0).getPublishedYear());
     }
 }

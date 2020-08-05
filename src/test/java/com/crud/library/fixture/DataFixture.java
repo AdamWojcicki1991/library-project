@@ -13,8 +13,8 @@ import com.crud.library.title.domain.TitleDto;
 import java.time.LocalDate;
 import java.util.Date;
 
-public class DataFixture {
-    public Title createTitle() {
+public final class DataFixture {
+    public Title getTitle() {
         return Title.builder()
                 .title("Title")
                 .author("Author")
@@ -22,22 +22,21 @@ public class DataFixture {
                 .build();
     }
 
-    public Book createBook(Title title, BookStatus bookStatus) {
+    public Book getBook(Title title, BookStatus bookStatus) {
         return Book.builder()
                 .title(title)
                 .bookStatus(bookStatus)
                 .build();
     }
 
-    public Reader createReader() {
+    public Reader getReader() {
         return Reader.builder()
                 .name("Name")
                 .surname("Surname")
-                .createAccountDate(new Date())
                 .build();
     }
 
-    public Borrow createBorrow(Book book, Reader reader) {
+    public Borrow getBorrow(Book book, Reader reader) {
         return Borrow.builder()
                 .borrowDate(LocalDate.now().minusMonths(1))
                 .returnDate(LocalDate.now().plusMonths(1))
@@ -46,7 +45,7 @@ public class DataFixture {
                 .build();
     }
 
-    public TitleDto createTitleDto() {
+    public TitleDto getTitleDto() {
         return TitleDto.builder()
                 .id(1L)
                 .title("Title")
@@ -55,7 +54,7 @@ public class DataFixture {
                 .build();
     }
 
-    public BookDto createBookDto(TitleDto title, BookStatus bookStatus) {
+    public BookDto getBookDto(TitleDto title, BookStatus bookStatus) {
         return BookDto.builder()
                 .id(1L)
                 .title(title)
@@ -63,7 +62,7 @@ public class DataFixture {
                 .build();
     }
 
-    public ReaderDto createReaderDto() {
+    public ReaderDto getReaderDto() {
         return ReaderDto.builder()
                 .id(1L)
                 .name("Name")

@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -31,7 +32,7 @@ public class ReaderMapperTestSuite {
     @Test
     public void shouldMapToReader() {
         //GIVEN
-        ReaderDto readerDto = dataFixture.createReaderDto();
+        ReaderDto readerDto = dataFixture.getReaderDto();
         long readerDtoId = readerDto.getId();
         String readerNameDto = readerDto.getName();
         String readerSurnameDto = readerDto.getSurname();
@@ -52,7 +53,7 @@ public class ReaderMapperTestSuite {
     @Test
     public void shouldMapToReaderDto() {
         //GIVEN
-        Reader reader = dataFixture.createReader();
+        Reader reader = dataFixture.getReader();
         Long readerId = reader.getId();
         String readerName = reader.getName();
         String readerSurname = reader.getSurname();
@@ -73,12 +74,17 @@ public class ReaderMapperTestSuite {
     @Test
     public void shouldMapToReadersDto() {
         //GIVEN
-        Reader reader = dataFixture.createReader();
+        Reader reader = dataFixture.getReader();
+        Date createAccountDate = reader.getCreateAccountDate();
         List<Reader> readers = new ArrayList<>();
         readers.add(reader);
         //WHEN
         List<ReaderDto> readersDto = readerMapper.mapToReadersDto(readers);
         //THEN
         assertEquals(1, readersDto.size());
+        assertNull(readersDto.get(0).getId());
+        assertEquals("Name", readersDto.get(0).getName());
+        assertEquals("Surname", readersDto.get(0).getSurname());
+        assertEquals(createAccountDate, readersDto.get(0).getCreateAccountDate());
     }
 }
