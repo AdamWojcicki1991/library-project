@@ -25,22 +25,23 @@ public final class LibraryFacade {
     private final BorrowServiceDb borrowServiceDb;
     private final ReaderServiceDb readerServiceDb;
 
-    public List<Book> findAvailableBooks(final String title) {
+    public List<Book> findAvailableBooks(final Long titleId) {
         return bookServiceDb.getAllBooks().stream()
-                .filter(bookDto -> bookDto.getTitle().getTitle().equals(title))
-                .filter(bookDto -> bookDto.getBookStatus() == IN_LIBRARY)
+                .filter(book -> book.getTitle().getId().equals(titleId))
+                .filter(book -> book.getBookStatus() == IN_LIBRARY)
                 .collect(Collectors.toList());
     }
 
     public List<Borrow> findBorrowedBookByReader(final Long readerId) {
         return borrowServiceDb.getAllBorrows().stream()
                 .filter(borrow -> borrow.getReader().getId().equals(readerId))
+                .filter(borrow -> borrow.getReturnDate() == null)
                 .filter(borrow -> borrow.getBook().getBookStatus() == IN_CIRCULATION || borrow.getBook().getBookStatus() == LOST)
                 .collect(Collectors.toList());
     }
 
-    public void executeBorrow(final String title, final Long readerId) throws ProcessCanNotBeExecutedException {
-        List<Book> books = findAvailableBooks(title);
+    public void executeBorrow(final Long titleId, final Long readerId) throws ProcessCanNotBeExecutedException {
+        List<Book> books = findAvailableBooks(titleId);
         Optional<Reader> reader = readerServiceDb.getReaderById(readerId);
         if (!books.isEmpty() && reader.isPresent()) {
             Borrow borrow = updateBorrowedBook(updateBookStatus(books.get(0), IN_CIRCULATION), reader.get());
@@ -50,7 +51,7 @@ public final class LibraryFacade {
         }
     }
 
-    public Borrow executeReturn(final Long bookId, final Long readerId) throws ProcessCanNotBeExecutedException {
+    public Borrow executeReturn(Long bookId, Long readerId) throws ProcessCanNotBeExecutedException {
         List<Borrow> borrows = findBorrowedBook(bookId, readerId);
         Optional<Reader> reader = readerServiceDb.getReaderById(readerId);
         if (!borrows.isEmpty() && reader.isPresent()) {
@@ -65,6 +66,7 @@ public final class LibraryFacade {
         return borrowServiceDb.getAllBorrows().stream()
                 .filter(borrow -> borrow.getReader().getId().equals(readerId))
                 .filter(borrow -> borrow.getBook().getId().equals(bookId))
+                .filter(borrow -> borrow.getReturnDate() == null)
                 .filter(borrow -> borrow.getBook().getBookStatus() == IN_CIRCULATION || borrow.getBook().getBookStatus() == LOST)
                 .collect(Collectors.toList());
     }
@@ -83,7 +85,6 @@ public final class LibraryFacade {
                 .reader(reader)
                 .book(book)
                 .borrowDate(LocalDate.now())
-                .returnDate(LocalDate.now().plusMonths(1))
                 .build();
     }
 

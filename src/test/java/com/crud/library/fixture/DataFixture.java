@@ -39,7 +39,6 @@ public final class DataFixture {
     public Borrow getBorrow(Book book, Reader reader) {
         return Borrow.builder()
                 .borrowDate(LocalDate.now().minusMonths(1))
-                .returnDate(LocalDate.now().plusMonths(1))
                 .book(book)
                 .reader(reader)
                 .build();
@@ -71,11 +70,10 @@ public final class DataFixture {
                 .build();
     }
 
-    public BorrowDto createBorrowDto(BookDto book, ReaderDto reader) {
+    public BorrowDto getBorrowDto(BookDto book, ReaderDto reader) {
         return BorrowDto.builder()
                 .id(1L)
                 .borrowDate(LocalDate.now().minusMonths(1))
-                .returnDate(LocalDate.now().plusMonths(1))
                 .book(book)
                 .reader(reader)
                 .build();

@@ -43,7 +43,7 @@ public class BorrowMapperTestSuite {
         TitleDto title = dataFixture.getTitleDto();
         BookDto book = dataFixture.getBookDto(title, IN_LIBRARY);
         ReaderDto reader = dataFixture.getReaderDto();
-        BorrowDto borrowDto = dataFixture.createBorrowDto(book, reader);
+        BorrowDto borrowDto = dataFixture.getBorrowDto(book, reader);
         //WHEN
         Borrow borrow = borrowMapper.mapToBorrow(borrowDto);
         //THEN

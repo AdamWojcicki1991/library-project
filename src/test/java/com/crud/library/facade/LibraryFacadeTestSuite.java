@@ -23,6 +23,7 @@ import java.util.List;
 
 import static com.crud.library.book.BookStatus.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -57,15 +58,19 @@ public class LibraryFacadeTestSuite {
     public void shouldFindAvailableBooks() {
         //GIVEN
         Title title = dataFixture.getTitle();
-        titleServiceDb.saveTitle(title);
+        Long titleId = titleServiceDb.saveTitle(title).getId();
+        bookServiceDb.saveBook(dataFixture.getBook(title, IN_LIBRARY));
         bookServiceDb.saveBook(dataFixture.getBook(title, IN_LIBRARY));
         bookServiceDb.saveBook(dataFixture.getBook(title, IN_CIRCULATION));
         bookServiceDb.saveBook(dataFixture.getBook(title, LOST));
         //WHEN
-        List<Book> books = libraryFacade.findAvailableBooks("Title");
+        List<Book> books = libraryFacade.findAvailableBooks(titleId);
         //THEN
-        assertEquals(1, books.size());
+        assertEquals(2, books.size());
+        assertEquals(titleId, books.get(0).getTitle().getId());
+        assertEquals(titleId, books.get(1).getTitle().getId());
         assertEquals(IN_LIBRARY, books.get(0).getBookStatus());
+        assertEquals(IN_LIBRARY, books.get(1).getBookStatus());
     }
 
     @Test
@@ -80,7 +85,7 @@ public class LibraryFacadeTestSuite {
         bookServiceDb.saveBook(firstBook);
         bookServiceDb.saveBook(secondBook);
         bookServiceDb.saveBook(thirdBook);
-        long readerId = readerServiceDb.saveReader(reader).getId();
+        Long readerId = readerServiceDb.saveReader(reader).getId();
         borrowServiceDb.saveBorrow(dataFixture.getBorrow(firstBook, reader));
         borrowServiceDb.saveBorrow(dataFixture.getBorrow(secondBook, reader));
         borrowServiceDb.saveBorrow(dataFixture.getBorrow(thirdBook, reader));
@@ -88,6 +93,10 @@ public class LibraryFacadeTestSuite {
         List<Borrow> borrowsByReader = libraryFacade.findBorrowedBookByReader(readerId);
         //THEN
         assertEquals(2, borrowsByReader.size());
+        assertEquals(readerId, borrowsByReader.get(0).getReader().getId());
+        assertEquals(readerId, borrowsByReader.get(1).getReader().getId());
+        assertNull(borrowsByReader.get(0).getReturnDate());
+        assertNull(borrowsByReader.get(1).getReturnDate());
         assertEquals(IN_CIRCULATION, borrowsByReader.get(0).getBook().getBookStatus());
         assertEquals(LOST, borrowsByReader.get(1).getBook().getBookStatus());
     }
@@ -100,7 +109,7 @@ public class LibraryFacadeTestSuite {
         Book secondBook = dataFixture.getBook(title, IN_CIRCULATION);
         Book thirdBook = dataFixture.getBook(title, LOST);
         Reader reader = dataFixture.getReader();
-        titleServiceDb.saveTitle(title);
+        long titleId = titleServiceDb.saveTitle(title).getId();
         long readerId = readerServiceDb.saveReader(reader).getId();
         long firstBookId = bookServiceDb.saveBook(firstBook).getId();
         bookServiceDb.saveBook(secondBook);
@@ -109,7 +118,7 @@ public class LibraryFacadeTestSuite {
         List<Borrow> borrowsBeforeExecuteBorrow = borrowServiceDb.getAllBorrows();
         //WHEN
         try {
-            libraryFacade.executeBorrow("Title", readerId);
+            libraryFacade.executeBorrow(titleId, readerId);
         } catch (ProcessCanNotBeExecutedException e) {
             e.printStackTrace();
         }
@@ -122,11 +131,11 @@ public class LibraryFacadeTestSuite {
         assertEquals(IN_CIRCULATION, bookInDatabaseAfterBorrow.getBookStatus());
         assertEquals(IN_CIRCULATION, borrowsAfterExecuteBorrow.get(0).getBook().getBookStatus());
         assertEquals(LocalDate.now(), borrowsAfterExecuteBorrow.get(0).getBorrowDate());
-        assertEquals(LocalDate.now().plusMonths(1), borrowsAfterExecuteBorrow.get(0).getReturnDate());
+        assertNull(borrowsAfterExecuteBorrow.get(0).getReturnDate());
     }
 
     @Test
-    public void shouldExecuteReturn() {
+    public void shouldExecuteReturnBookInCirculation() {
         //GIVEN
         Title title = dataFixture.getTitle();
         Book book = dataFixture.getBook(title, IN_CIRCULATION);
@@ -150,7 +159,36 @@ public class LibraryFacadeTestSuite {
         assertEquals(1, borrowsAfterExecuteReturn.size());
         assertEquals(IN_LIBRARY, borrowsAfterExecuteReturn.get(0).getBook().getBookStatus());
         assertEquals(borrow.getId(), borrowsAfterExecuteReturn.get(0).getId());
-        assertEquals(LocalDate.now().minusMonths(1), borrowsAfterExecuteReturn.get(0).getBorrowDate());
+        assertEquals(borrowsBeforeExecuteReturn.get(0).getBorrowDate(), borrowsAfterExecuteReturn.get(0).getBorrowDate());
+        assertEquals(LocalDate.now(), borrowsAfterExecuteReturn.get(0).getReturnDate());
+    }
+
+    @Test
+    public void shouldExecuteReturnLostBook() {
+        //GIVEN
+        Title title = dataFixture.getTitle();
+        Book book = dataFixture.getBook(title, LOST);
+        Reader reader = dataFixture.getReader();
+        Borrow borrow = dataFixture.getBorrow(book, reader);
+        titleServiceDb.saveTitle(title);
+        long bookId = bookServiceDb.saveBook(book).getId();
+        long readerId = readerServiceDb.saveReader(reader).getId();
+        borrowServiceDb.saveBorrow(borrow);
+        List<Borrow> borrowsBeforeExecuteReturn = borrowServiceDb.getAllBorrows();
+        //WHEN
+        try {
+            libraryFacade.executeReturn(bookId, readerId);
+        } catch (ProcessCanNotBeExecutedException e) {
+            e.printStackTrace();
+        }
+        List<Borrow> borrowsAfterExecuteReturn = borrowServiceDb.getAllBorrows();
+        //THEN
+        assertEquals(1, borrowsBeforeExecuteReturn.size());
+        assertEquals(LOST, borrowsBeforeExecuteReturn.get(0).getBook().getBookStatus());
+        assertEquals(1, borrowsAfterExecuteReturn.size());
+        assertEquals(IN_LIBRARY, borrowsAfterExecuteReturn.get(0).getBook().getBookStatus());
+        assertEquals(borrow.getId(), borrowsAfterExecuteReturn.get(0).getId());
+        assertEquals(borrowsBeforeExecuteReturn.get(0).getBorrowDate(), borrowsAfterExecuteReturn.get(0).getBorrowDate());
         assertEquals(LocalDate.now(), borrowsAfterExecuteReturn.get(0).getReturnDate());
     }
 }

@@ -32,7 +32,6 @@ public final class Borrow {
     @Column(name = "BORROW_DATE")
     private LocalDate borrowDate;
 
-    @NotNull
     @Column(name = "RETURN_DATE")
     private LocalDate returnDate;
 }

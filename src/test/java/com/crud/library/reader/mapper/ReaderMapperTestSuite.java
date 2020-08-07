@@ -36,18 +36,15 @@ public class ReaderMapperTestSuite {
         long readerDtoId = readerDto.getId();
         String readerNameDto = readerDto.getName();
         String readerSurnameDto = readerDto.getSurname();
-        Date readerCreateAccountDateDto = readerDto.getCreateAccountDate();
         //WHEN
         Reader reader = readerMapper.mapToReader(readerDto);
         long readerId = reader.getId();
         String readerName = reader.getName();
         String readerSurname = reader.getSurname();
-        Date readerCreateAccountDate = reader.getCreateAccountDate();
         //THEN
         assertEquals(readerDtoId, readerId);
         assertEquals(readerNameDto, readerName);
         assertEquals(readerSurnameDto, readerSurname);
-        assertEquals(readerCreateAccountDateDto, readerCreateAccountDate);
     }
 
     @Test
