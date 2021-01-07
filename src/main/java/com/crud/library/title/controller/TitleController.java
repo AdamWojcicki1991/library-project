@@ -14,7 +14,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/v1/title")
+@RequestMapping("/v1/titles")
 public final class TitleController {
     private final TitleMapper titleMapper;
     private final TitleServiceDb titleServiceDb;

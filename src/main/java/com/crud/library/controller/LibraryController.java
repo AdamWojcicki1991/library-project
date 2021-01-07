@@ -21,25 +21,25 @@ public final class LibraryController {
     private final BookMapper bookMapper;
     private final LibraryFacade libraryFacade;
 
-    @GetMapping("/books/search")
+    @GetMapping("/books")
     public List<BookDto> getAvailableBooks(@RequestParam final Long titleId) {
         log.info("Get available books by titleId: " + titleId);
         return bookMapper.mapToBooksDto(libraryFacade.findAvailableBooks(titleId));
     }
 
-    @GetMapping("/borrows/search")
+    @GetMapping("/borrows")
     public List<BorrowDto> getBorrowedBookByReader(@RequestParam final Long readerId) {
         log.info("Get reader borrows by readerId: " + readerId);
         return borrowMapper.mapToBorrowsDto(libraryFacade.findBorrowedBookByReader(readerId));
     }
 
-    @PostMapping("/borrowBook")
+    @PostMapping("/borrow")
     public void borrowBook(@RequestParam final Long titleId, @RequestParam final Long readerId) throws ProcessCanNotBeExecutedException {
         log.info("Borrow book by titleId: " + titleId + " and " + "readerID: " + readerId);
         libraryFacade.executeBorrow(titleId, readerId);
     }
 
-    @PutMapping("/returnBook")
+    @PutMapping("/return")
     public BorrowDto returnBook(@RequestParam final Long bookId, @RequestParam final Long readerId) throws ProcessCanNotBeExecutedException {
         log.info("Return book by bookId: " + bookId + " and " + "readerID: " + readerId);
         return borrowMapper.mapToBorrowDto(libraryFacade.executeReturn(bookId, readerId));

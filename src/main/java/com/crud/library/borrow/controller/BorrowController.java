@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/v1/borrow")
+@RequestMapping("/v1/borrows")
 public final class BorrowController {
     private final BorrowMapper borrowMapper;
     private final BorrowServiceDb borrowServiceDb;

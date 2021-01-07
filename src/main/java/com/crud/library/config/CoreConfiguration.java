@@ -17,7 +17,7 @@ public class CoreConfiguration implements WebMvcConfigurer {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.crud.library.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.crud.library"))
                 .paths(PathSelectors.ant("/v1/**"))
                 .build();
     }

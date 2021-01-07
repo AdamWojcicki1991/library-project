@@ -14,7 +14,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/v1/book")
+@RequestMapping("/v1/books")
 public final class BookController {
     private final BookMapper bookMapper;
     private final BookServiceDb bookServiceDb;
